@@ -1,0 +1,16 @@
+python-dotenv
+pandas
+numpy
+pymongo
+certifi
+pymongo[srv]
+scikit-learn
+
+matplotlib
+seaborn
+jupyter
+notebook
+ipykernel
+openpyxl
+missingno
+PyYAML
