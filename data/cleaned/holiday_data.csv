@@ -1,0 +1,15 @@
+Holiday_Name,Date,Year,Month,Month_Name,Day,Is_Weekend
+Republic Day,2026-01-26,2026,1,January,Monday,False
+Id-ul-Fitr,2026-03-21,2026,3,March,Saturday,True
+Mahavir Jayanti,2026-03-31,2026,3,March,Tuesday,False
+Good Friday,2026-04-03,2026,4,April,Friday,False
+Buddha Purnima,2026-05-01,2026,5,May,Friday,False
+Id-ul-Zuha,2026-05-27,2026,5,May,Wednesday,False
+Muharram,2026-06-26,2026,6,June,Friday,False
+Independence Day,2026-08-15,2026,8,August,Saturday,True
+Prophet Mohammad's Birthday (Id-e-Milad),2026-08-26,2026,8,August,Wednesday,False
+Mahatma Gandhi's Birthday,2026-10-02,2026,10,October,Friday,False
+Dussehra (Vijay Dashmi),2026-10-20,2026,10,October,Tuesday,False
+Diwali (Deepavali),2026-11-08,2026,11,November,Sunday,True
+Guru Nanak's Birthday,2026-11-24,2026,11,November,Tuesday,False
+Christmas Day,2026-12-25,2026,12,December,Friday,False
