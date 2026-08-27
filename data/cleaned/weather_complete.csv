@@ -1,0 +1,10 @@
+destination,country,latitude,longitude,temperature,feels_like,humidity,pressure,wind_speed,cloudiness,weather_condition,weather_description,visibility,rain_1h,timestamp
+Hyderabad,IN,17.3753,78.4744,26.23,26.23,73,1010,5.14,22,Clouds,few clouds,10000.0,0.0,2026-08-25T14:29:49+00:00
+Goa,IN,15.3333,74.0833,26.21,26.21,92,1010,1.96,66,Rain,light rain,10000.0,0.23,2026-08-25T14:28:43+00:00
+Munnar,IN,10.1,77.0667,16.23,16.42,96,1016,2.11,100,Clouds,overcast clouds,,0.0,2026-08-25T14:28:58+00:00
+Manali,IN,13.1667,80.2667,30.29,37.29,79,1007,0.45,98,Clouds,overcast clouds,10000.0,0.0,2026-08-25T14:30:02+00:00
+Jaipur,IN,26.9167,75.8167,27.62,32.42,89,1004,0.0,97,Clouds,overcast clouds,10000.0,0.0,2026-08-25T14:26:24+00:00
+Kodaikanal,IN,10.2337,77.492,14.75,14.47,84,1015,1.78,100,Clouds,overcast clouds,10000.0,0.0,2026-08-25T15:59:33.022947+00:00
+Thiruvananthapuram,IN,8.4882,76.9476,26.94,30.46,89,1014,3.09,100,Clouds,overcast clouds,10000.0,0.0,2026-08-25T15:59:33.772839+00:00
+Pondicherry,IN,11.9341,79.8306,28.19,31.04,70,1009,6.17,100,Rain,light rain,10000.0,0.25,2026-08-25T15:59:34.892180+00:00
+Pahalgam,IN,34.0322,75.3226,16.53,16.09,71,1015,2.25,0,Clear,clear sky,10000.0,0.0,2026-08-25T15:59:38.153311+00:00
