@@ -1,3 +1,7 @@
 venv/
 .env
 flow.txt
+
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
