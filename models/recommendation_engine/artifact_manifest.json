@@ -1,0 +1,71 @@
+{
+    "project": "Travel Agent",
+    "artifact_version": "recommendation_engine_v1",
+    "status": "validated",
+    "evaluation_complete": true,
+    "destination_count": 50,
+    "artifact_directory": "models/recommendation_engine",
+    "core_models": {
+        "feature_scaler": "models/feature_scaler.pkl",
+        "pca_model": "models/pca_model.pkl"
+    },
+    "recommendation_artifacts": {
+        "processed_dataset": "models/recommendation_engine/processed_df.pkl",
+        "normalized_features": "models/recommendation_engine/normalized_features.pkl",
+        "destination_profile_scores": "models/recommendation_engine/destination_profile_scores.pkl",
+        "destination_similarity": "models/recommendation_engine/destination_similarity.pkl",
+        "destination_order": "models/recommendation_engine/destination_order.pkl",
+        "availability": "models/recommendation_engine/availability.pkl",
+        "recommendation_config": "models/recommendation_engine/recommendation_config.json",
+        "feature_metadata": "models/recommendation_engine/feature_metadata.json"
+    },
+    "human_readable_copies": {
+        "processed_dataset": "models/recommendation_engine/processed_df.csv",
+        "normalized_features": "models/recommendation_engine/normalized_features.csv",
+        "destination_profile_scores": "models/recommendation_engine/destination_profile_scores.csv",
+        "destination_similarity": "models/recommendation_engine/destination_similarity.csv",
+        "destination_order": "models/recommendation_engine/destination_order.csv",
+        "availability": "models/recommendation_engine/availability.csv"
+    },
+    "dimensions": {
+        "processed_dataset": [
+            50,
+            42
+        ],
+        "normalized_features": [
+            50,
+            29
+        ],
+        "destination_profile_scores": [
+            50,
+            5
+        ],
+        "destination_similarity": [
+            50,
+            50
+        ],
+        "availability": [
+            50,
+            7
+        ]
+    },
+    "model_dimensions": {
+        "original_features": 47,
+        "numerical_features": 34,
+        "binary_features": 13,
+        "redundant_features": 2,
+        "model_features": 48,
+        "pca_input": 45,
+        "pca_components": 15
+    },
+    "validation": {
+        "similarity_symmetric": true,
+        "similarity_self_similarity": true,
+        "destination_unique": true,
+        "destination_count_valid": true,
+        "recommendation_engine_validated": true,
+        "edge_case_robustness_passed": true,
+        "explainability_validated": true,
+        "missing_data_robustness_validated": true
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "preference_groups": [
+        "budget",
+        "flight",
+        "accommodation",
+        "weather",
+        "destination_characteristics"
+    ],
+    "interest_profiles": [
+        "nature",
+        "sightseeing",
+        "water_coastal",
+        "wildlife"
+    ],
+    "preference_group_count": 5,
+    "interest_profile_count": 4,
+    "destination_count": 50,
+    "original_feature_count": 47,
+    "numerical_feature_count": 34,
+    "binary_feature_count": 13,
+    "redundant_feature_count": 2,
+    "model_feature_count": 48,
+    "pca_input_feature_count": 45,
+    "pca_component_count": 15
+}

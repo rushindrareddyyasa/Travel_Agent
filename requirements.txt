@@ -1,10 +1,9 @@
 python-dotenv
-pandas
-numpy
-pymongo
-certifi
+pandas==3.0.3
+numpy==2.5.1
 pymongo[srv]
-scikit-learn
+certifi
+scikit-learn==1.9.0
 
 matplotlib
 seaborn
@@ -14,3 +13,5 @@ ipykernel
 openpyxl
 missingno
 PyYAML
+
+streamlit==1.62.0
