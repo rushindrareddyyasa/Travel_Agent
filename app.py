@@ -22,15 +22,245 @@ if str(SRC_DIR) not in sys.path:
 
 
 # =========================================================
-# IMPORT EXISTING RECOMMENDATION ENGINE
+# FASTAPI BACKEND CONFIGURATION
+# =========================================================
+#
+# Streamlit is now the FRONTEND.
+# Recommendation generation happens through the deployed
+# FastAPI backend on Render.
+#
+# The API URL can be overridden with the
+# TRAVEL_AGENT_API_URL environment variable.
 # =========================================================
 
-from travel_recommendation_engine import (
-    get_recommendations,
-    explain_recommendation,
-    destinations,
-    processed_df
-)
+import os
+import requests
+
+API_URL = os.getenv(
+    "TRAVEL_AGENT_API_URL",
+    "https://travel-agent-api-t66t.onrender.com"
+).rstrip("/")
+
+RECOMMEND_ENDPOINT = f"{API_URL}/recommend"
+
+
+# =========================================================
+# LOAD DESTINATION DATA FOR UI DETAILS
+# =========================================================
+#
+# We do NOT import the recommendation engine here.
+# The ML recommendation calculation is handled by FastAPI.
+#
+# The Streamlit UI still needs destination names and travel
+# details such as flights, hotels and weather. These are read
+# directly from the project's cleaned dataset.
+# =========================================================
+
+def load_destination_data():
+    """Load the cleaned destination dataset used for UI details."""
+
+    candidate_files = [
+        PROJECT_ROOT / "data" / "cleaned" / "integrated_travel_dataset.csv",
+        PROJECT_ROOT / "data" / "cleaned" / "travel_integrated_preprocessed.csv",
+        PROJECT_ROOT / "data" / "cleaned" / "travel_features.csv",
+    ]
+
+    for file_path in candidate_files:
+
+        if file_path.exists():
+
+            try:
+
+                dataframe = pd.read_csv(file_path)
+
+                # The application expects a destination column.
+                if "destination" in dataframe.columns:
+
+                    return dataframe
+
+                # Some datasets may use a capitalized column name.
+                if "Destination" in dataframe.columns:
+
+                    dataframe = dataframe.rename(
+                        columns={"Destination": "destination"}
+                    )
+
+                    return dataframe
+
+            except Exception:
+                continue
+
+    return pd.DataFrame()
+
+
+processed_df = load_destination_data()
+
+if not processed_df.empty:
+
+    destinations = sorted(
+        processed_df["destination"]
+        .dropna()
+        .astype(str)
+        .str.strip()
+        .unique()
+        .tolist()
+    )
+
+else:
+
+    destinations = []
+
+
+# =========================================================
+# FASTAPI REQUEST HELPER
+# =========================================================
+
+def get_recommendations_from_api(
+    preferences,
+    interests,
+    reference_destination,
+    mode,
+    top_k
+):
+    """
+    Send the user's Streamlit inputs to the deployed FastAPI API.
+
+    FastAPI performs the actual recommendation calculation
+    using the saved ML/recommendation artifacts.
+    """
+
+    payload = {
+        "reference_destination": reference_destination,
+        "mode": mode,
+        "top_k": top_k,
+        "preferences": preferences,
+        "interests": interests
+    }
+
+    try:
+
+        response = requests.post(
+            RECOMMEND_ENDPOINT,
+            json=payload,
+            timeout=120
+        )
+
+        # Convert HTTP errors such as 422/500 into exceptions.
+        response.raise_for_status()
+
+        return response.json()
+
+    except requests.exceptions.Timeout:
+
+        st.error(
+            "The Travel Agent API took too long to respond. "
+            "Please try again."
+        )
+
+    except requests.exceptions.RequestException as error:
+
+        st.error(
+            f"Unable to connect to the Travel Agent API: {error}"
+        )
+
+    except ValueError:
+
+        st.error(
+            "The Travel Agent API returned an invalid response."
+        )
+
+    return None
+
+
+# =========================================================
+# API RESPONSE → DATAFRAME
+# =========================================================
+
+def api_response_to_dataframe(api_response):
+    """
+    Convert the FastAPI JSON recommendation response into
+    the DataFrame format expected by the existing UI.
+    """
+
+    if not api_response:
+
+        return pd.DataFrame()
+
+    recommendation_rows = api_response.get(
+        "recommendations",
+        []
+    )
+
+    if not recommendation_rows:
+
+        return pd.DataFrame()
+
+    return pd.DataFrame(
+        recommendation_rows
+    )
+
+
+# =========================================================
+# RECOMMENDATION EXPLANATION
+# =========================================================
+
+def explain_recommendation(row, reference_destination):
+    """
+    Create a human-readable explanation from the scores returned
+    by FastAPI.
+
+    The scoring itself is NOT performed here. FastAPI has already
+    calculated the three component scores and the final score.
+    """
+
+    preference_score = float(
+        row["personalized_preference_score"]
+    )
+
+    interest_score = float(
+        row["personalized_interest_score"]
+    )
+
+    similarity_score = float(
+        row["similarity_score"]
+    )
+
+    # Describe the strongest reason for the recommendation.
+    score_map = {
+        "travel preferences": preference_score,
+        "your interests": interest_score,
+        f"similarity to {reference_destination}": similarity_score
+    }
+
+    strongest_reason = max(
+        score_map,
+        key=score_map.get
+    )
+
+    strongest_score = score_map[
+        strongest_reason
+    ]
+
+    if strongest_score >= 0.70:
+
+        strength_text = "strongly"
+
+    elif strongest_score >= 0.50:
+
+        strength_text = "well"
+
+    else:
+
+        strength_text = "to some extent"
+
+    explanation = (
+        f"{row['destination']} was recommended because it "
+        f"matches {strongest_reason} {strength_text}."
+    )
+
+    return {
+        "explanation": explanation
+    }
 
 
 
@@ -588,17 +818,19 @@ if generate_button:
 
 
     # -----------------------------------------------------
-    # Generate recommendations using the EXISTING engine.
+    # Generate recommendations through the deployed FastAPI
+    # backend instead of running the recommendation engine
+    # directly inside Streamlit.
     # -----------------------------------------------------
 
     try:
 
-        recommendations = get_recommendations(
+        api_response = get_recommendations_from_api(
 
-            user_preferences=
+            preferences=
                 user_preferences,
 
-            user_interests=
+            interests=
                 user_interests,
 
             reference_destination=
@@ -611,22 +843,31 @@ if generate_button:
                 top_k
         )
 
+        if api_response is not None:
 
-        # -------------------------------------------------
-        # Store recommendations in session state.
-        #
-        # This allows the results to remain available while
-        # the user interacts with the application.
-        # -------------------------------------------------
+            recommendations = api_response_to_dataframe(
+                api_response
+            )
 
-        st.session_state[
-            "recommendations"
-        ] = recommendations
+            if recommendations.empty:
 
-        st.session_state[
-            "reference_destination"
-        ] = reference_destination
+                st.warning(
+                    "The API returned no recommendations."
+                )
 
+            else:
+
+                # -------------------------------------------------
+                # Store recommendations in session state.
+                # -------------------------------------------------
+
+                st.session_state[
+                    "recommendations"
+                ] = recommendations
+
+                st.session_state[
+                    "reference_destination"
+                ] = reference_destination
 
     except Exception as error:
 
