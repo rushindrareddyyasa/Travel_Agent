@@ -15,3 +15,5 @@ missingno
 PyYAML
 
 streamlit==1.62.0
+fastapi
+uvicorn
