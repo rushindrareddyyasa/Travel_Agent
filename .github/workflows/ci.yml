@@ -1,0 +1,108 @@
+# ============================================================
+# TRAVEL AGENT - CONTINUOUS INTEGRATION
+# ============================================================
+#
+# This workflow automatically validates the project whenever
+# changes are pushed to the main branch or a pull request
+# targets main.
+#
+# Pipeline:
+#   1. Checkout the repository
+#   2. Install Python 3.12
+#   3. Install project dependencies
+#   4. Check Python syntax
+#   5. Run the automated API tests
+#
+# If any step fails, GitHub Actions marks the workflow failed.
+# ============================================================
+
+name: Travel Agent CI
+
+
+# ============================================================
+# WORKFLOW TRIGGERS
+# ============================================================
+
+on:
+
+  # Run when code is pushed to main.
+  push:
+    branches:
+      - main
+
+  # Run for pull requests targeting main.
+  pull_request:
+    branches:
+      - main
+
+
+# ============================================================
+# JOBS
+# ============================================================
+
+jobs:
+
+  test:
+
+    # GitHub-hosted Linux machine.
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # ------------------------------------------------------
+      # 1. Checkout project
+      # ------------------------------------------------------
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+      # ------------------------------------------------------
+      # 2. Install Python
+      # ------------------------------------------------------
+      #
+      # We use Python 3.12 because this matches the Python
+      # version used by your local project environment.
+      # ------------------------------------------------------
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+
+      # ------------------------------------------------------
+      # 3. Upgrade pip
+      # ------------------------------------------------------
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+
+      # ------------------------------------------------------
+      # 4. Install project dependencies
+      # ------------------------------------------------------
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+
+      # ------------------------------------------------------
+      # 5. Check Python syntax
+      # ------------------------------------------------------
+      #
+      # This catches syntax errors before deployment.
+      # ------------------------------------------------------
+
+      - name: Check Python syntax
+        run: |
+          python -m compileall -q api.py app.py src
+
+
+      # ------------------------------------------------------
+      # 6. Run automated API tests
+      # ------------------------------------------------------
+
+      - name: Run API tests
+        run: |
+          python -m pytest tests -v
