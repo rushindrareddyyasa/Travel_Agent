@@ -1,4 +1,5 @@
 python-dotenv
+
 pandas==3.0.3
 numpy==2.5.1
 pymongo[srv]
@@ -15,5 +16,6 @@ missingno
 PyYAML
 
 streamlit==1.62.0
+
 fastapi
 uvicorn
